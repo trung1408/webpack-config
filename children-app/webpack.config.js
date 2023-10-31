@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = {
   entry: "./src/index.tsx", // Entry point for TypeScript
@@ -10,21 +9,17 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx"], // Allow importing .tsx and .ts files
-    alias: {
-      'react': require.resolve('react'),
-      'react-dom': require.resolve('react-dom'),
-      'antd': 'antd',
-    },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html", // to import index.html file inside index.js
     }),
-    new webpack.ProvidePlugin({
-      React: 'react',
-      ReactDOM: 'react-dom',
-    }),
   ],
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+    'antd': 'antd',
+  },
   devServer: {
     port: 4200, // you can change the port
   },
