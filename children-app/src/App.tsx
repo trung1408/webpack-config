@@ -1,12 +1,11 @@
+import { Form, FormInstance, Input } from 'antd';
 import React, { useCallback, useEffect } from 'react';
-import { Col, Row, Typography, Form, Input, Button } from 'antd';
 
-const { Title } = Typography;
-
-const MAIN_DOP_HOST = 'http://localhost:8000';
+// const MAIN_DOP_HOST = 'http://localhost:8000';
+const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
 
 export default function App() {
-  const [form] = Form.useForm();
+  const formRef = React.useRef<FormInstance>(null);
 
   const onFinish = (values: any) => {
     const { firstName, lastName, address } = values;
@@ -29,22 +28,23 @@ export default function App() {
     });
   };
 
-  useEffect(() => {
-    window.addEventListener('message', (event) => {
-      if (event.origin === MAIN_DOP_HOST) {
-        console.log('[Children] Received message from parent app:', event.data);
-        const { firstName, lastName } = event.data;
-        form.setFieldsValue({ firstName, lastName });
+  const handleCompleteTask = useCallback(() => {
+    formRef.current?.submit();
+  }, []);
+  
 
-        // Send a response back to the parent
-        if (event.source) {
-          event.source.postMessage(
-            { message: 'Children already received data' },
-            MAIN_DOP_HOST as any
-          );
-        }
+  useEffect(() => {
+    const handleMessage = (event: any) => {
+      if (event.origin === MAIN_DOP_HOST && event.data === 'COMPLETE_TASK') {
+        handleCompleteTask();
       }
-    });
+    }
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   const sendMessageToParent = useCallback((message: unknown) => {
@@ -53,20 +53,20 @@ export default function App() {
   }, []);
 
   return (
-    <Form layout="vertical" form={form} onFinish={onFinish}>
+    <Form 
+      layout="vertical"
+      ref={formRef}
+      name="control-ref"
+     onFinish={onFinish}
+     >
       <Form.Item label="First name" name="firstName">
-        <Input placeholder="input first name" />
+        <Input required placeholder="input first name" />
       </Form.Item>
       <Form.Item label="Last name" name="lastName">
-        <Input placeholder="input last name" />
+        <Input required placeholder="input last name" />
       </Form.Item>
       <Form.Item label="Address" name="address">
-        <Input placeholder="input address" />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
+        <Input required placeholder="input address" />
       </Form.Item>
     </Form>
   );
