@@ -1,55 +1,9 @@
-import { Button, Col, Form, FormInstance, Input, Row } from 'antd';
-import React, { useCallback, useEffect } from 'react';
-
-// const MAIN_DOP_HOST = 'http://localhost:8000';
-const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
+import { Form, Input } from 'antd';
+import React from 'react';
+import { useForm } from './hooks/useForm';
 
 export default function App() {
-  const formRef = React.useRef<FormInstance>(null);
-
-  const onFinish = (values: any) => {
-    const { firstName, lastName, address } = values;
-    sendMessageToParent({
-      action: 'SUBMIT',
-      data: {
-        firstName: {
-          value: firstName,
-          type: 'String',
-        },
-        lastName: {
-          value: lastName,
-          type: 'String',
-        },
-        address: {
-          value: address,
-          type: 'String',
-        },
-      },
-    });
-  };
-
-  const handleCompleteTask = useCallback(() => {
-    formRef.current?.submit();
-  }, []);
-
-  useEffect(() => {
-    const handleMessage = (event: any) => {
-      if (event.origin === MAIN_DOP_HOST && event.data === 'COMPLETE_TASK') {
-        handleCompleteTask();
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
-
-  const sendMessageToParent = useCallback((message: unknown) => {
-    console.log('[CHILD] sendMessageToParent', message);
-    window.parent.postMessage(message, MAIN_DOP_HOST);
-  }, []);
+  const { formRef, onFinish, disabled } = useForm();
 
   return (
     <Form
@@ -57,6 +11,7 @@ export default function App() {
       ref={formRef}
       name="control-ref"
       onFinish={onFinish}
+      disabled={disabled}
     >
       <Form.Item
         label="First name"
