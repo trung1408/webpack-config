@@ -1,4 +1,4 @@
-import { Form, FormInstance, Input } from 'antd';
+import { Button, Col, Form, FormInstance, Input, Row } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 
 // const MAIN_DOP_HOST = 'http://localhost:8000';
@@ -31,14 +31,13 @@ export default function App() {
   const handleCompleteTask = useCallback(() => {
     formRef.current?.submit();
   }, []);
-  
 
   useEffect(() => {
     const handleMessage = (event: any) => {
       if (event.origin === MAIN_DOP_HOST && event.data === 'COMPLETE_TASK') {
         handleCompleteTask();
       }
-    }
+    };
 
     window.addEventListener('message', handleMessage);
 
@@ -53,20 +52,32 @@ export default function App() {
   }, []);
 
   return (
-    <Form 
+    <Form
       layout="vertical"
       ref={formRef}
       name="control-ref"
-     onFinish={onFinish}
-     >
-      <Form.Item label="First name" name="firstName">
-        <Input required placeholder="input first name" />
+      onFinish={onFinish}
+    >
+      <Form.Item
+        label="First name"
+        name="firstName"
+        rules={[{ required: true, message: 'Please input your first name!' }]}
+      >
+        <Input placeholder="input first name" />
       </Form.Item>
-      <Form.Item label="Last name" name="lastName">
-        <Input required placeholder="input last name" />
+      <Form.Item
+        label="Last name"
+        name="lastName"
+        rules={[{ required: true, message: 'Please input your last name!' }]}
+      >
+        <Input placeholder="input last name" />
       </Form.Item>
-      <Form.Item label="Address" name="address">
-        <Input required placeholder="input address" />
+      <Form.Item
+        label="Address"
+        name="address"
+        rules={[{ required: true, message: 'Please input your address!' }]}
+      >
+        <Input placeholder="input address" />
       </Form.Item>
     </Form>
   );
