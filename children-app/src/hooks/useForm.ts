@@ -33,13 +33,13 @@ export function useForm() {
   }, []);
 
   const handleSetFormStatus = useCallback((eventData: IMessageToExternalForm) => {
-    console.log('AAAAA handleSetFormStatus: ', eventData);
+    console.log('FORM: handleSetFormStatus: ', eventData);
     
     setDisabled(true);
   }, []);
 
   const handleSetFormData = useCallback((eventData: IMessageToExternalForm) => {
-    console.log('AAAAA handleSetFormData: ', eventData);
+    console.log('FORM: handleSetFormData: ', eventData);
     formRef.current?.setFieldsValue(eventData.data);
   }, []);
 
@@ -49,8 +49,12 @@ export function useForm() {
   }, []);
 
   useEffect(() => {
+    console.log('INIT CHILD');
+    
     const handleMessage = (event: any) => {
       const eventData: IMessageToExternalForm= event.data;
+      console.log('event.origin', event.origin);
+      
       if (event.origin === MAIN_DOP_HOST && eventData.type === EventTypes.COMPLETE_TASK) {
         handleCompleteTask();
       }
