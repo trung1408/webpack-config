@@ -14,7 +14,7 @@ dayjs.extend(LocalizedFormat);
 dayjs.extend(customParseFormat);
 
 export default function App() {
-  const { formRef, initialData, onFinish, disabled } = useForm();
+  const { formRef, onFinish, disabled } = useForm();
 
   return (
     <Form
@@ -27,10 +27,7 @@ export default function App() {
       autoComplete="off"
       style={{ padding: 16 }}
     >
-      <InvoiceForm
-        initialData={initialData}
-        disabled={disabled}
-      />
+      <InvoiceForm />
     </Form>
   );
 }

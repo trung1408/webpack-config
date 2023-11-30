@@ -39,7 +39,7 @@ export const formatDataWithConfidence = (values: IInvoiceFormData) => {
     (acc, key) => {
       if (key !== "items") {
         if (key === "resultWellName") {
-          acc[key] = sanitizeData(values[key]).map((item) => ({
+          acc[key] = sanitizeData(values[key] || []).map((item) => ({
             value: item,
             confidence: 100,
           }));
@@ -55,7 +55,7 @@ export const formatDataWithConfidence = (values: IInvoiceFormData) => {
           };
         }
       } else {
-        acc[key] = values[key].map((item) => ({
+        acc[key] = (values[key] || []).map((item) => ({
           itemName: {
             value: item.itemName,
             confidence: 100,

@@ -17,12 +17,7 @@ import { accountOptions, vendorOptions, wellNameOptions } from '../utils';
 const { Panel } = Collapse;
 const { confirm } = Modal;
 
-interface InvoiceFormProps {
-  initialData?: any;
-  disabled?: boolean;
-}
-
-export function InvoiceForm({ disabled }: InvoiceFormProps) {
+export function InvoiceForm() {
   const showDeleteConfirm = (removeFn: any) => {
     confirm({
       title: 'Are you sure you want to remove this entry?',

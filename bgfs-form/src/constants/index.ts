@@ -8,7 +8,7 @@ export enum EventTypes {
 // export const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
 export const MAIN_DOP_HOST = 'http://localhost:8000';
 
-export const DATE_FORMAT='YYYY-MM-DDTHH:mm:ss.SSSZZ';
+export const DATE_FORMAT='YYYY-MM-DD 00:00:00';
 
 export enum VariableType {
   BOOLEAN = 'Boolean',

@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
+import { DATE_FORMAT } from '../constants';
 
 export const convertDateToFormat = (
   date: any,
-  format = 'YYYY-MM-DDTHH:mm:ss.SSSZZ'
+  format = DATE_FORMAT
 ) => (date ? dayjs(date).format(format) : '--');
 
 export const parseToDate = (
   date: string,
-  format = 'YYYY-MM-DD 00:00:00'
+  format = DATE_FORMAT
 ) => (date ? dayjs(date, format) : null);
 

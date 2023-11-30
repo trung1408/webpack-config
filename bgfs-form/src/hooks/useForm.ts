@@ -30,7 +30,7 @@ export function useForm() {
   }, []);
 
   const handleSetFormStatus = useCallback((eventData: IMessageToExternalForm) => {
-    setDisabled(eventData.data || false);
+    setDisabled(eventData.data?.disabled || false);
   }, []);
 
   const getOptionValue = useCallback((value: string, options: any[]) => {
@@ -58,7 +58,7 @@ export function useForm() {
         transactionDate: parseToDate(invoiceData.transactionDate.value),
         invoiceNumber: invoiceData.invoiceNumber?.value,
         resultWellName: (invoiceData.resultWellName || []).map((it: any) => getOptionValue(it.value, wellNameOptions)),
-        items: invoiceData.items.map((item: any) => ({
+        items: (invoiceData.items || []).map((item: any) => ({
           itemName: item.itemName.value,
           amount: item.amount.value,
         })),
