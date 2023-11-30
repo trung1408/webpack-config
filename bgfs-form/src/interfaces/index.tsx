@@ -1,5 +1,6 @@
 import { EventTypes, VariableType } from '../constants';
 
+
 export interface IMessageToExternalForm {
   type: EventTypes;
   data?: any;

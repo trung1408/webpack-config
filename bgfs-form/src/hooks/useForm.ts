@@ -1,13 +1,21 @@
+import { ValidateStatus } from 'antd/es/form/FormItem';
+import { IDopOption } from './../interfaces/index';
 import { FormInstance } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { EventTypes } from '../constants';
 import { IInvoiceFormData, IMessageToExternalForm } from '../interfaces';
-import { accountOptions, checkInitData, convertInputData, findInitOptionLabel, formatDataWithConfidence, parseToDate, vendorOptions, wellNameOptions } from '../utils';
+import { accountOptions, checkInitData, convertInputData, findInitOptionLabel, findSimilar, formatDataWithConfidence, parseToDate, vendorOptions, wellNameOptions } from '../utils';
 
 export function useForm() {
   const formRef = React.useRef<FormInstance>(null);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [threshold, setThreshold] = useState<number>(100);
+  const [specialThreshold, setSpecialThreshold] = useState<number>(100);
   const [initialData, setInitialData] = useState<any>();
+
+  const [blurredFields, setBlurredFields] = useState<any>({});
+  const [userInteractedFields, setUserInteractedFields] = useState<any>({});
+  const [modifiedFields, setModifiedFields] = useState<any>({});
 
   const onFinish = (values: IInvoiceFormData) => {
     const formattedObject = formatDataWithConfidence(values);
@@ -42,9 +50,91 @@ export function useForm() {
     : "";
   }, []);
 
+  const onGetConfidence = useCallback((field: string|number, confidence: number) => {
+    if (disabled) {
+      return "";
+    }
+
+    if (blurredFields[field] && modifiedFields[field]) {
+      return "success";
+    }
+
+    if (field === "vendor") {
+      if (confidence < specialThreshold || !confidence) return "warning";
+
+      return "success";
+    }
+
+    if (confidence < threshold || !confidence) return "warning";
+
+    return "success";
+  }, [blurredFields, modifiedFields, threshold, specialThreshold]);
+
+  const handleBlur = (name: string|number) => {
+    if (modifiedFields[name])
+      setBlurredFields({
+        ...blurredFields,
+        [name]: true,
+      });
+  };
+
+  const handleChangeInput = (name: string|number, value: any) => {
+    const initialValue = initialData ? initialData[name]?.value : "";
+    if (value !== initialValue) {
+      setUserInteractedFields({
+        ...userInteractedFields,
+        [name]: true,
+      });
+    }
+
+    if (value !== "") {
+      setModifiedFields({
+        ...modifiedFields,
+        [name]: true,
+      });
+    }
+  };
+
+  const validateOption = (
+    name: string,
+    options: IDopOption[],
+    field: string | number,
+    confidence?: number
+  ): { validateStatus: ValidateStatus; help?: string } => {
+    if (disabled) return { validateStatus: "" };
+
+    if (blurredFields[field] && modifiedFields[field]) {
+      return { validateStatus: "success" };
+    }
+
+    const matchedOptions = findSimilar(name, options);
+
+    if (matchedOptions.length === 1 || !name) {
+      return {
+        validateStatus: onGetConfidence(
+          field,
+          confidence ?? (initialData ? initialData[field]?.confidence : 0),
+        ),
+      };
+    } else if (matchedOptions.length > 1 && name) {
+      return {
+        validateStatus: "warning",
+        help: "Multiple matches found.",
+      };
+    } else {
+      return {
+        validateStatus: "error",
+        help: `${name} not found.`,
+      };
+    }
+  };
+
+
   const handleSetFormData = useCallback((eventData: IMessageToExternalForm) => {
     const receivedData = convertInputData(eventData.data);
     console.log('formData', receivedData);
+    setThreshold(Number(receivedData?.threshold || 100));
+    setSpecialThreshold(Number(receivedData?.threshold_special_fields || 100));
 
     if (receivedData?.invoice_data) {
       const invoiceData = JSON.parse(receivedData?.invoice_data || '{}');
@@ -103,5 +193,9 @@ export function useForm() {
     initialData,
     disabled,
     onFinish,
+    onGetConfidence,
+    validateOption,
+    handleChangeInput,
+    handleBlur,
   }
 }
