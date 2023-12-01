@@ -143,7 +143,7 @@ export function useForm() {
       const fieldsData = {
         account: getOptionValue(invoiceData.account?.value, accountOptions),
         vendor: getOptionValue(invoiceData.vendor?.value, vendorOptions),
-        totalInvoice: invoiceData.totalInvoice?.value,
+        totalInvoice: (invoiceData.totalInvoice?.value || '').replace(/[^\d.]/g, ""),
         invoiceDate: parseToDate(invoiceData.invoiceDate.value),
         transactionDate: parseToDate(invoiceData.transactionDate.value),
         invoiceNumber: invoiceData.invoiceNumber?.value,
