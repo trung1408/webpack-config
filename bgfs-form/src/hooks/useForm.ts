@@ -33,6 +33,13 @@ export function useForm() {
     });
   };
 
+  const onGetFileByPath = useCallback((path: string) => {
+    sendMessageToParent({
+      action: EventTypes.GET_FILE_BY_PATH,
+      data: path,
+    });
+  }, []);
+
   const handleCompleteTask = useCallback(() => {
     formRef.current?.submit();
   }, []);
@@ -129,10 +136,14 @@ export function useForm() {
     }
   };
 
-
   const handleSetFormData = useCallback((eventData: IMessageToExternalForm) => {
     const receivedData = convertInputData(eventData.data);
-    console.log('formData', receivedData);
+    const filePath = receivedData['File:invoice_file_converted'] || receivedData['File:invoice_file_path'];
+
+    if (filePath) {
+      onGetFileByPath(filePath);
+    }
+
     setThreshold(Number(receivedData?.threshold || 100));
     setSpecialThreshold(Number(receivedData?.threshold_special_fields || 100));
 
@@ -165,9 +176,7 @@ export function useForm() {
   useEffect(() => {
     const handleMessage = (event: any) => {
       const eventData: IMessageToExternalForm= event.data;
-      console.log('event.origin', event.origin);
-      console.log('IN_FORM eventData', eventData);
-      
+
       if (eventData.type === EventTypes.COMPLETE_TASK) {
         handleCompleteTask();
       }

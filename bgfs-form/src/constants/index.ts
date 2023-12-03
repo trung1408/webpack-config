@@ -3,6 +3,7 @@ export enum EventTypes {
   SET_DATA = 'SET_DATA',
   SET_FORM_STATUS = 'SET_FORM_STATUS',
   SUBMIT = 'SUBMIT',
+  GET_FILE_BY_PATH = 'GET_FILE_BY_PATH',
 }
 
 // export const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
