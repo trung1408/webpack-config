@@ -5,4 +5,5 @@ export enum EventTypes {
   SUBMIT = 'SUBMIT',
 }
 
-export const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
+// export const MAIN_DOP_HOST = 'https://dop-v3-dev.vbpo-st.com';
+export const MAIN_DOP_HOST = 'http://localhost:8000';
