@@ -4,7 +4,7 @@ import { FormInstance } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { EventTypes } from '../constants';
 import { IInvoiceFormData, IMessageToExternalForm } from '../interfaces';
-import { accountOptions, checkInitData, convertInputData, findInitOptionLabel, findSimilar, formatDataWithConfidence, parseToDate, vendorOptions, wellNameOptions } from '../utils';
+import { accountOptions, checkInitData, convertCompletedInputData, convertInputData, findInitOptionLabel, findSimilar, formatDataWithConfidence, parseToDate, vendorOptions, wellNameOptions } from '../utils';
 
 export function useForm() {
   const formRef = React.useRef<FormInstance>(null);
@@ -75,7 +75,7 @@ export function useForm() {
     if (confidence < threshold || !confidence) return "warning";
 
     return "success";
-  }, [blurredFields, modifiedFields, threshold, specialThreshold]);
+  }, [disabled, blurredFields, modifiedFields, threshold, specialThreshold]);
 
   const handleBlur = (name: string|number) => {
     if (modifiedFields[name])
@@ -137,7 +137,9 @@ export function useForm() {
   };
 
   const handleSetFormData = useCallback((eventData: IMessageToExternalForm) => {
-    const receivedData = convertInputData(eventData.data);
+    const isTaskCompleted = eventData.extra?.isTaskCompleted || false;
+    const receivedData = isTaskCompleted ? convertCompletedInputData(eventData.data) : convertInputData(eventData.data);
+
     const filePath = receivedData['File:invoice_file_converted'] || receivedData['File:invoice_file_path'];
 
     if (filePath) {

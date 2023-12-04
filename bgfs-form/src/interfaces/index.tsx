@@ -4,6 +4,11 @@ import { EventTypes, VariableType } from '../constants';
 export interface IMessageToExternalForm {
   type: EventTypes;
   data?: any;
+  extra?: ExtraFormField;
+}
+
+export interface ExtraFormField {
+  isTaskCompleted?: boolean;
 }
 
 export interface ITaskVariable {
@@ -59,4 +64,28 @@ export interface IInvoiceFormData {
 export interface IItem {
   itemName: string;
   amount:   string;
+}
+
+export interface CompletedTaskVariable {
+  type: string;
+  value: boolean|number|string;
+  valueInfo: any;
+  id: string;
+  name: string;
+  processDefinitionKey: string;
+  processDefinitionId: string;
+  processInstanceId: string;
+  executionId: string;
+  activityInstanceId: string;
+  caseDefinitionKey: string;
+  caseDefinitionId: string;
+  caseInstanceId: string;
+  caseExecutionId: string;
+  taskId: string;
+  errorMessage: string;
+  tenantId: string;
+  state: string;
+  createTime: Date;
+  removalTime: Date;
+  rootProcessInstanceId: string;
 }

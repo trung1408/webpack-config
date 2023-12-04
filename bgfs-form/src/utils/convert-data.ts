@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { DATE_FORMAT, VariableType } from "../constants";
-import { IInvoiceFormData, ITaskVariable } from "../interfaces";
+import { CompletedTaskVariable, IInvoiceFormData, ITaskVariable } from "../interfaces";
 import { convertDateToFormat } from "./date-utils";
 import { findSimilar } from "./levenshtein";
 
@@ -11,6 +11,20 @@ export const convertInputData = (variables: ITaskVariable) => {
     if ('value' in item && 'type' in item) {
       result[key] = formatDataByType(item.type, item.value);
     }
+  }
+
+  return result;
+}
+
+interface OutputObject {
+  [key: string]: string | number | boolean;
+}
+
+export const convertCompletedInputData = (data: CompletedTaskVariable[]): OutputObject => {
+  const result: OutputObject = {};
+
+  for (const item of data) {
+    result[item.name] = item.value;
   }
 
   return result;

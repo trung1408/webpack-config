@@ -61,8 +61,6 @@ export function InvoiceForm({
     }));
   }, []);
 
-  console.log('initialData', initialData);
-
   return (
     <>
       <Form.Item
