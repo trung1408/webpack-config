@@ -141,10 +141,10 @@ export function useForm() {
     const receivedData = isTaskCompleted ? convertCompletedInputData(eventData.data) : convertInputData(eventData.data);
 
     const filePath = receivedData['File:invoice_file_converted'] || receivedData['File:invoice_file_path'];
-
-    if (filePath) {
-      onGetFileByPath(filePath);
-    }
+    onGetFileByPath(filePath);
+    // if (filePath) {
+    //   onGetFileByPath(filePath);
+    // }
 
     setThreshold(Number(receivedData?.threshold || 100));
     setSpecialThreshold(Number(receivedData?.threshold_special_fields || 100));
